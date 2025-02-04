@@ -21,19 +21,19 @@ const proxyHintInjection = `
 
 setTimeout(() => {
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    var hint = \`Warning: You are currently using a web proxy, the original link is \${window.location.pathname.substring(1)} . Please note that you are using a proxy, and do not log in to any website. Click to close this hint. <br>警告：您当前正在使用网络代理，原始链接为 \${window.location.pathname.substring(1)} 。请注意您正在使用代理，请勿登录任何网站。单击关闭此提示。\`;
+    var hint = \`警告: 您正在使用网络代理，原始链接为： \${window.location.pathname.substring(1)}。为了安全，请避免登录任何网站以及输入敏感信息。\`;
+
     document.body.insertAdjacentHTML(
       'afterbegin', 
-      \`<div style="position:fixed;left:0px;top:0px;width:100%;margin:0px;padding:0px;display:block;z-index:99999999999999999999999;user-select:none;cursor:pointer;" id="__PROXY_HINT_DIV__" onclick="document.getElementById('__PROXY_HINT_DIV__').remove();">
-        <span style="position:absolute;width:calc(100% - 20px);min-height:30px;font-size:18px;color:yellow;background:rgb(180,0,0);text-align:center;border-radius:5px;padding-left:10px;padding-right:10px;padding-top:1px;padding-bottom:1px;">
-          \${hint}
-        </span>
+      \`<div id="__PROXY_HINT_DIV__" style="position: fixed; left: 0; top: 0; width: 100%; margin: 0; padding: 0; z-index: 999999999; background-color: #fff3e0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 14px; color: #333; cursor: pointer; padding: 8px 0; user-select: none;" onclick="this.remove();">
+        <span style="color: #d32f2f;">点击此处关闭提示框。\${hint}</span>
       </div>\`
     );
   }else{
     alert(hint);
   }
 }, 3000);
+
 
 `;
 const httpRequestInjection = `
@@ -573,94 +573,272 @@ console.log("WINDOW CORS ERROR EVENT ADDED");
 `;
 const mainPage = `
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网页代理服务</title>
   <style>
-    body{
-      background:rgb(150,10,10);
-      color:rgb(240,240,0);
-    }
-    a{
-      color:rgb(250,250,180);
-    }
-    del{
-      color:rgb(190,190,190);
-    }
-    .center{
-      text-align:center;
-    }
-    .important{
-      font-weight:bold;
-      font-size:27;
-    }
-    /* my style begins*/
-    form[id=urlForm] {
-        max-width: 340px;
-        min-width: 340px;
-        margin: 0 auto;
-     }
-    input[id=targetUrl] {
-        background-color: rgb(240,240,0);
-     }
-    button[id=jumpButton] {
-        background-color: rgb(240,240,0);
-     }
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+          color: #fff;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 2rem 1rem;
+      }
+
+      .container {
+          width: 100%;
+          max-width: 1100px;
+          margin: 0 auto;
+      }
+
+      .header {
+          text-align: center;
+          margin-bottom: 3rem;
+          animation: fadeInDown 1s ease;
+      }
+
+      .header h1 {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+          background: linear-gradient(to right, #00f2fe, #4facfe);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      }
+
+      .header p {
+          font-size: 1.2rem;
+          color: #a8b2d1;
+          max-width: 600px;
+          margin: 0 auto;
+      }
+
+      .search-card {
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(10px);
+          border-radius: 20px;
+          padding: 2rem;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+          margin-bottom: 2rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          animation: fadeInUp 1s ease;
+      }
+
+      .input-group {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+      }
+
+      .input-group input {
+          flex: 1;
+          padding: 1rem 1.5rem;
+          border-radius: 12px;
+          border: 2px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.05);
+          color: #fff;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+      }
+
+      .input-group input:focus {
+          outline: none;
+          border-color: #4facfe;
+          box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3);
+      }
+
+      .input-group button {
+          padding: 1rem 2rem;
+          border-radius: 12px;
+          border: none;
+          background: linear-gradient(to right, #00f2fe, #4facfe);
+          color: #fff;
+          font-weight: bold;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .input-group button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+      }
+
+      .examples {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 20px;
+          padding: 2rem;
+          margin-top: 2rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .examples h3 {
+          color: #4facfe;
+          margin-bottom: 1rem;
+          font-size: 1.2rem;
+      }
+
+      .example-item {
+          margin-bottom: 1rem;
+          padding: 1rem;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+          transition: all 0.3s ease;
+      }
+
+      .example-item:hover {
+          background: rgba(255, 255, 255, 0.1);
+          transform: translateX(5px);
+      }
+
+      .example-item strong {
+          color: #00f2fe;
+          word-break: break-all;
+          cursor: pointer;
+          text-decoration: none;
+          display: block;
+          transition: opacity 0.3s ease;
+      }
+
+      .example-item strong:hover {
+          opacity: 0.8;
+      }
+
+      .info-text {
+          text-align: center;
+          color: #a8b2d1;
+          margin: 2rem 0;
+          line-height: 1.6;
+      }
+
+      .highlight {
+          color: #4facfe;
+          font-weight: bold;
+      }
+
+      footer {
+          margin-top: auto;
+          padding: 2rem;
+          text-align: center;
+          color: #a8b2d1;
+      }
+
+      footer a {
+          color: #4facfe;
+          text-decoration: none;
+          transition: color 0.3s ease;
+      }
+
+      footer a:hover {
+          color: #00f2fe;
+      }
+
+      @keyframes fadeInDown {
+          from {
+              opacity: 0;
+              transform: translateY(-20px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      @keyframes fadeInUp {
+          from {
+              opacity: 0;
+              transform: translateY(20px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      @media (max-width: 768px) {
+          .header h1 {
+              font-size: 2rem;
+          }
+
+          .input-group {
+              flex-direction: column;
+          }
+
+          .input-group button {
+              width: 100%;
+          }
+      }
   </style>
 </head>
 <body>
-    <h3 class="center">
-        I made this project because some extreme annoying network filter software in my school, which is notorious "Goguardian", and now it is open source at <a href="https://github.com/1234567Yang/cf-proxy-ex/">https://github.com/1234567Yang/cf-proxy-ex/</a>.
-      </h3>
-      <br><br><br>
-      <ul style="font-size:25;">
-      <li class="important">How to use this proxy:<br>
-        Type the website you want to go to after the website's url, for example: <br>
-        https://the current url/github.com<br>OR<br>https://the current url/https://github.com</li>
-      </ul>
-        <form id="urlForm" onsubmit="redirectToProxy(event)">
-            <fieldset>
-                <legend>Proxy Everything</legend>
-                <label for="targetUrl">TargetUrl: <input type="text" id="targetUrl" placeholder="Enter the target URL here..."></label>
-                <button type="submit" id="jumpButton">Jump!</button>
-            </fieldset>
-        </form>
-        <script>
-            function redirectToProxy(event) {
-                event.preventDefault();
-                const targetUrl = document.getElementById('targetUrl').value.trim();
-                const currentOrigin = window.location.origin;
-                window.open(currentOrigin + '/' + targetUrl, '_blank');
-            }
-        </script>
-      <ul>
-        <li>If your browser show 400 bad request, please clear your browser cookie<br></li>
-        <li>Why I make this:<br> Because school blcok every website that I can find math / CS and other subjects' study material and question solutions. In the eyes of the school, China (and some other countries) seems to be outside the scope of this "world". They block access to server IP addresses in China and block access to Chinese search engines and video websites. Of course, some commonly used social software has also been blocked, which once made it impossible for me to send messages to my parents on campus. I don't think that's how it should be, so I'm going to fight it as hard as I can. I believe this will not only benefit myself, but a lot more people can get benefits.</li>
-       <li>If this website is blocked by your school: <br>Contact me at <a href="mailto:help@lhyang.org">help@lhyang.org</a>, and I will setup a new webpage.</li>
-        <li>Limitation:<br>Although I tried my best to make every website proxiable, there still might be pages or resources that can not be load, and the most important part is that <span class="important">YOU SHOULD NEVER LOGIN ANY ACCOUNT VIA ONLINE PROXY</span>.</li>
-      </ul>
+  <div class="container">
+      <header class="header">
+          <h1>Welcome to the Internet!</h1>
+          <p>畅游无阻的网络世界，只需输入目标网址，即刻开启您的探索之旅。</p>
+      </header>
 
-    <h3>
-        <br>
-        <span>Proxies that can bypass the school network blockade:</span>
-        <br><br>
-        <span>Traditional VPNs such as <a href="https://hide.me/">hide me</a>.</span>
-        <br><br>
-        <a href="https://www.torproject.org/">Tor Browser</a><span>, short for The Onion Router, is free and open-source software for enabling anonymous communication. It directs Internet traffic via a free, worldwide volunteer overlay network that consists of more than seven thousand relays. Using Tor makes it more difficult to trace a user's Internet activity.</span>
-        <br><br>
-        <a href="https://v2rayn.org/">v2RayN</a><span> is a GUI client for Windows, support Xray core and v2fly core and others. You must subscribe to an <a href = "https://aijichang.org/6190/">airport</a> to use it. For example, you can subscribe <a href="https://feiniaoyun.xyz/">fly bird cloud</a>.</span>
-        <br><br>
-        <span>Bypass <del>Goguardian</del> by proxy: You can buy a domain($1) and setup by yourself: </span><a href="https://github.com/1234567Yang/cf-proxy-ex/blob/main/deploy_on_deno_tutorial.md">how to setup a proxy</a><span>. Unless <del>Goguardian</del> use white list mode, this can always work.</span>
-        <br>
-        <span>Too expensive? Never mind! There are a lot of free domains registration companies (for the first year of the domain) that do not need any credit card, search online!</span>
-        <br><br>
-        <span>Youtube video unblock: "Thanks" for Russia that they started to invade Ukraine and Google blocked the traffic from Russia, there are a LOT of mirror sites working. You can even <a href="https://github.com/iv-org/invidious">setup</a> one by yourself.</span>
-    </h3>
-    <a href="https://goguardian.com" style="visibility:hidden"></a>
-    <a href="https://blocked.goguardian.com/" style="visibility:hidden"></a>
-    <a href="https://www.google.com/gen_204" style="visibility:hidden"></a>
-    <p style="font-size:280px !important;width:100%;" class="center">
-        ☭
-    </p>
+      <main class="search-card">
+          <form class="input-group" onsubmit="redirectToProxy(event)">
+              <input 
+                  type="text" 
+                  id="target-url" 
+                  placeholder="请输入目标网址 (例如: github.com)" 
+                  onkeydown="if(event.key === 'Enter') this.form.submit();"
+              />
+              <button type="submit">立即访问</button>
+          </form>
+
+          <script>
+              function redirectToProxy(event) {
+                  event.preventDefault();
+                  const targetUrl = document.getElementById('target-url').value.trim();
+                  const currentOrigin = window.location.origin;
+                  window.open(currentOrigin + '/' + targetUrl, '_blank');
+              }
+          </script>
+
+          <p class="info-text">
+              提示：您可以直接在 <span class="highlight">cnmirror.us.kg</span> 后添加
+              <span class="highlight">/目标域名</span> 进行访问
+          </p>
+
+          <div class="examples">
+                <h3>快速访问示例</h3>
+                <div class="example-item">
+                    <p>访问 GitHub:</p>
+                    <strong onclick="window.open('https://cnmirror.us.kg/https://github.com', '_blank')">
+                        https://cnmirror.us.kg/https://github.com
+                    </strong>
+                </div>
+                <div class="example-item">
+                    <p>DuckDuckGo 聊天:</p>
+                    <strong onclick="window.open('https://cnmirror.us.kg/https://duckduckgo.com/?t=h_&q=hi&ia=chat', '_blank')">
+                        https://cnmirror.us.kg/https://duckduckgo.com/?t=h_&q=hi&ia=chat
+                    </strong>
+                </div>
+                <div class="example-item">
+                    <p>Google 地图:</p>
+                    <strong onclick="window.open('https://cnmirror.us.kg/https://www.google.com/maps', '_blank')">
+                        https://cnmirror.us.kg/https://www.google.com/maps
+                    </strong>
+                </div>
+            </div>
+      </main>
+  </div>
+
+    <footer>
+        <p>&copy; 2025 | 开源地址：<a href="https://github.com/printlndarling/cf-proxy-ex" target="_blank">GitHub</a> | 原始项目仓库：<a href="https://github.com/1234567Yang/cf-proxy-ex" target="_blank">GitHub</a></p>
+    </footer>
 </body>
 </html>
 `;

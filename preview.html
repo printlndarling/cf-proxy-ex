@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页代理服务</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #a8b2d1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 1s ease;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3);
+        }
+
+        .input-group button {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(to right, #00f2fe, #4facfe);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+        }
+
+        .examples {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .examples h3 {
+            color: #4facfe;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .example-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .example-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .example-item strong {
+            color: #00f2fe;
+            word-break: break-all;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        .example-item strong:hover {
+            opacity: 0.8;
+        }
+
+        .info-text {
+            text-align: center;
+            color: #a8b2d1;
+            margin: 2rem 0;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #4facfe;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 2rem;
+            text-align: center;
+            color: #a8b2d1;
+        }
+
+        footer a {
+            color: #4facfe;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #00f2fe;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .input-group button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Welcome to the Internet!</h1>
+            <p>畅游无阻的网络世界，只需输入目标网址，即刻开启您的探索之旅。</p>
+        </header>
+
+        <main class="search-card">
+            <form class="input-group" onsubmit="redirectToProxy(event)">
+                <input 
+                    type="text" 
+                    id="target-url" 
+                    placeholder="请输入目标网址 (例如: github.com)" 
+                    onkeydown="if(event.key === 'Enter') this.form.submit();"
+                />
+                <button type="submit">立即访问</button>
+            </form>
+
+            <script>
+                function redirectToProxy(event) {
+                    event.preventDefault();
+                    const targetUrl = document.getElementById('target-url').value.trim();
+                    const currentOrigin = window.location.origin;
+                    window.open(currentOrigin + '/' + targetUrl, '_blank');
+                }
+            </script>
+
+            <p class="info-text">
+                提示：您可以直接在 <span class="highlight">cnmirror.us.kg</span> 后添加
+                <span class="highlight">/目标域名</span> 进行访问
+            </p>
+
+            <div class="examples">
+                <h3>快速访问示例</h3>
+                <div class="example-item">
+                    <p>访问 GitHub:</p>
+                    <strong onclick="window.location.href='https://cnmirror.us.kg/https://github.com'">
+                        https://cnmirror.us.kg/https://github.com
+                    </strong>
+                </div>
+                <div class="example-item">
+                    <p>DuckDuckGo 聊天:</p>
+                    <strong onclick="window.location.href='https://cnmirror.us.kg/https://duckduckgo.com/?t=h_&q=hi&ia=chat'">
+                        https://cnmirror.us.kg/https://duckduckgo.com/?t=h_&q=hi&ia=chat
+                    </strong>
+                </div>
+                <div class="example-item">
+                    <p>Google 地图:</p>
+                    <strong onclick="window.location.href='https://cnmirror.us.kg/https://www.google.com/maps'">
+                        https://cnmirror.us.kg/https://www.google.com/maps
+                    </strong>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 | 开源地址：<a href="https://github.com/printlndarling/cf-proxy-ex" target="_blank">GitHub</a> | 原始项目仓库：<a href="https://github.com/1234567Yang/cf-proxy-ex" target="_blank">GitHub</a></p>
+    </footer>
+</body>
+</html>

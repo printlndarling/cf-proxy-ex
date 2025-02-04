@@ -4,7 +4,7 @@
 <div align="center">
 <h1>Cloudflare Proxy EX</h1>
 
-[中文](https://github.com/1234567Yang/cf-proxy-ex) [English](https://github-com.translate.goog/1234567Yang/cf-proxy-ex?_x_tr_sl=zh-CN&_x_tr_tl=en&_x_tr_hl=zh-CN&_x_tr_pto=wapp)
+[中文](https://github.com/printlndarling/cf-proxy-ex) [English](https://github-com.translate.goog/1234567Yang/cf-proxy-ex?_x_tr_sl=zh-CN&_x_tr_tl=en&_x_tr_hl=zh-CN&_x_tr_pto=wapp)
 
 <br>
 
@@ -28,23 +28,23 @@ Cloudflare超级代理，OpenAI/ChatGPT代理，Github加速，在线代理。�
 # 在线体验
 
 ### 首页
-https://y.demo.lhyang.org/
+https://cnmirror.us.kg/
 ### Duckduckgo聊天
-https://y.demo.lhyang.org/https://duckduckgo.com/?t=h_&q=hi&ia=chat
+https://cnmirror.us.kg/https://duckduckgo.com/?t=h_&q=hi&ia=chat
 ### Google地图
-https://y.demo.lhyang.org/https://www.google.com/maps
+https://cnmirror.us.kg/https://www.google.com/maps
 
 
 # 用法
 * 请先根据 [快速开始](#快速开始) 进行部署
 * 在任意网址前面加上 `https://你的域名/` <br>例如 `https://你的域名/https://github.com`
-* [使用技巧](https://github.com/1234567Yang/cf-proxy-ex/blob/main/usage_tips.md)
+* [使用技巧](https://github.com/printlndarling/cf-proxy-ex/blob/main/usage_tips.md)
 
 
 # 快速开始
 
-* [在Deno上部署](https://github.com/1234567Yang/cf-proxy-ex/blob/main/deploy_on_deno_tutorial.md)
-* [在Cloudflare上部署](https://github.com/1234567Yang/cf-proxy-ex/blob/main/deploy_on_cf_tutorial.md)
+* [在Deno上部署](https://github.com/printlndarling/cf-proxy-ex/blob/main/deploy_on_deno_tutorial.md)
+* [在Cloudflare上部署](https://github.com/printlndarling/cf-proxy-ex/blob/main/deploy_on_cf_tutorial.md)
 
 > [!TIP]
 > 我强烈建议开启[安全密码](#安全密码)，不仅可以防止被扫描，还可以防止网站爬虫爬取内容。
